@@ -1,0 +1,18 @@
+export interface UseCaseConfig {
+  name: string;
+  implementationType: "endpoint" | "handler";
+  httpMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  eventName?: string;
+  handlerName?: string;
+}
+
+export interface ModuleConfig {
+  name: string;
+  useCases: UseCaseConfig[];
+}
+
+export interface BoundedContext {
+  name: string;
+  path: string;
+  modules: ModuleConfig[];
+}

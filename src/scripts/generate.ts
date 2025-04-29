@@ -3,25 +3,9 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import * as fs from "fs";
 import * as path from "path";
-
-interface UseCaseConfig {
-  name: string;
-  implementationType: "endpoint" | "event-handler";
-  httpMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  eventName?: string;
-  handlerName?: string;
-}
-
-interface ModuleConfig {
-  name: string;
-  useCases: UseCaseConfig[];
-}
-
-interface BoundedContext {
-  name: string;
-  path: string;
-  modules: ModuleConfig[];
-}
+import { capitalize, verbToNoun } from "./helpers";
+import { BoundedContext, ModuleConfig, UseCaseConfig } from "./types/types";
+import { createRequestDto } from "./contents";
 
 const program = new Command();
 
@@ -29,44 +13,6 @@ program
   .name("ddd-generator")
   .description("Generate DDD structure for a bounded context")
   .version("1.0.0");
-
-// Función para convertir verbo a sustantivo
-function verbToNoun(verb: string): string {
-  const commonVerbs: Record<string, string> = {
-    create: "creator",
-    update: "updater",
-    delete: "deleter",
-    remove: "remover",
-    get: "getter",
-    find: "finder",
-    search: "searcher",
-    authenticate: "authenticator",
-    authorize: "authorizer",
-    validate: "validator",
-    verify: "verifier",
-    process: "processor",
-    analyze: "analyzer",
-    transform: "transformer",
-    convert: "converter",
-    manage: "manager",
-    handle: "handler",
-    execute: "executor",
-    implement: "implementer",
-    calculate: "calculator",
-    compute: "computer",
-    generate: "generator",
-    modify: "modifier",
-    notify: "notifier",
-    observe: "observer",
-    publish: "publisher",
-    subscribe: "subscriber",
-    send: "sender",
-    receive: "receiver",
-  };
-
-  const verb_clean = verb.toLowerCase().trim();
-  return commonVerbs[verb_clean] || `${verb_clean}r`; // Por defecto añadimos 'r' si no está en el mapa
-}
 
 async function createDirectoryStructure(boundedContext: BoundedContext) {
   const basePath = path.join("src", boundedContext.path, boundedContext.name);
@@ -111,10 +57,7 @@ async function createDirectoryStructure(boundedContext: BoundedContext) {
       fs.mkdirSync(dtoPath, { recursive: true });
 
       // Crear archivos DTO
-      const requestDtoContent = `import { Request } from '@shared/app/use-cases/request.ts'
-export class Request${capitalize(moduleConfig.name)}${capitalize(nounForm)} implements Request {
-  // Add your request DTO properties here and implements Request shared interface
-}`;
+      const requestDtoContent = createRequestDto(moduleConfig.name, nounForm);
 
       const responseDtoContent = `import { Response } from '@shared/app/use-cases/response.ts'
 export class Response${capitalize(moduleConfig.name)}${capitalize(nounForm)} implements Response {
@@ -195,9 +138,9 @@ export class ${capitalize(moduleConfig.name)}${capitalize(nounForm)}Controller {
             `✨ Created controller: ${moduleConfig.name}${capitalize(nounForm)}Controller`
           )
         );
-      } else if (useCase.implementationType === "event-handler") {
+      } else if (useCase.implementationType === "handler") {
         // Crear event handler
-        const handlerPath = path.join(moduleBase, "infra", "event-handlers");
+        const handlerPath = path.join(moduleBase, "infra", "handlers");
         const handlerContent = `import { ${capitalize(moduleConfig.name)}${capitalize(
           nounForm
         )} } from '../../app/use-cases/${verbBase}/${moduleConfig.name.toLowerCase()}-${nounForm}.use-case';
@@ -244,18 +187,13 @@ export class ${capitalize(
   });
 }
 
-// Utilidad para capitalizar el nombre del use case
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
 async function promptUseCaseDetails(useCaseName: string): Promise<UseCaseConfig> {
   const { implementationType } = await inquirer.prompt([
     {
       type: "list",
       name: "implementationType",
       message: `How is the use case "${useCaseName}" implemented?`,
-      choices: ["endpoint", "event-handler"],
+      choices: ["endpoint", "handler"],
     },
   ]);
 
