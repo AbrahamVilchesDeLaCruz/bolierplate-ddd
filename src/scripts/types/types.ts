@@ -1,6 +1,6 @@
 export interface UseCaseConfig {
   name: string;
-  implementationType: "endpoint" | "handler";
+  implementationType: "endpoint" | "event-handler";
   httpMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   eventName?: string;
   handlerName?: string;
