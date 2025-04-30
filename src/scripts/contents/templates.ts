@@ -5,13 +5,11 @@ export const createRequestDto = (
   agregateName: string,
   useCase: string
 ): string => {
-  return `
-    import { Request } from '@shared/app/use-cases/request.ts'
+  return `import { Request } from '@shared/app/use-cases/request.ts'
     
-    export class Request${capitalize(agregateName)}${capitalize(useCase)} implements Request {
-    // Add your request DTO properties here and implements Request shared interface
-    }
-  `;
+export class Request${capitalize(agregateName)}${capitalize(useCase)} implements Request {
+  // Add your request DTO properties here and implements Request shared interface
+}`;
 };
 
 export const createResponseDto = (
@@ -19,13 +17,11 @@ export const createResponseDto = (
   agregateName: string,
   useCase: string
 ): string => {
-  return `
-    import { Response } from '@shared/app/use-cases/response.ts'
+  return `import { Response } from '@shared/app/use-cases/response.ts'
     
-    export class Response${capitalize(agregateName)}${capitalize(useCase)} implements Response {
-      // Add your response DTO properties here and implements Response shared interface
-    }
-  `;
+export class Response${capitalize(agregateName)}${capitalize(useCase)} implements Response {
+  // Add your response DTO properties here and implements Response shared interface
+}`;
 };
 
 export const createUseCase = (
@@ -37,20 +33,18 @@ export const createUseCase = (
   const agregateLow = agregateName.toLowerCase();
   const nounCap = capitalize(useCase);
 
-  return `
-      import { Request${agregateCap}${nounCap} } from './dto/request-${agregateLow}-${useCase}.dto';
-      import { Response${agregateCap}${nounCap} } from './dto/response-${agregateLow}-${useCase}.dto';
-      import { UseCase } from '@shared/app/use-cases/use-case.ts'
+  return `import { Request${agregateCap}${nounCap} } from './dto/request-${agregateLow}-${useCase}.dto';
+import { Response${agregateCap}${nounCap} } from './dto/response-${agregateLow}-${useCase}.dto';
+import { UseCase } from '@shared/app/use-cases/use-case.ts'
 
-      export class ${agregateCap}${nounCap} implements UseCase {
-        constructor() {}
+export class ${agregateCap}${nounCap} implements UseCase {
+  constructor() {}
 
-      async execute(request: Request${agregateCap}${nounCap}): Promise<Response${agregateCap}${nounCap} | void> {
-        // Implement your use case logic here
-        throw new Error('Method not implemented.');
-      }
-    }
-  `;
+  async execute(request: Request${agregateCap}${nounCap}): Promise<Response${agregateCap}${nounCap} | void> {
+    // Implement your use case logic here
+    throw new Error('Method not implemented.');
+  }
+}`;
 };
 
 export const createController = (
@@ -65,23 +59,22 @@ export const createController = (
   const useCaseCap = capitalize(useCase);
   const useCaseLow = useCase.toLowerCase();
 
-  return `
-    import { ${agregateCap}${useCaseCap} } from '../../app/use-cases/${verbBase}/${agregateLow}-${useCase}.use-case';
-    import { Request${agregateCap}${useCaseCap} } from '../../app/use-cases/${verbBase}/dto/request-${agregateLow}-${useCase}.dto';
+  return `import { ${agregateCap}${useCaseCap} } from '../../app/use-cases/${verbBase}/${agregateLow}-${useCase}.use-case';
+import { Request${agregateCap}${useCaseCap} } from '../../app/use-cases/${verbBase}/dto/request-${agregateLow}-${useCase}.dto';
 
-    export class ${agregateCap}${useCaseCap}${capitalize(httpMethod)}Controller {
-      constructor(private readonly ${useCaseLow}: ${agregateCap}${useCaseCap}) {}
+export class ${agregateCap}${useCaseCap}${capitalize(httpMethod)}Controller {
+  constructor(private readonly ${useCaseLow}: ${agregateCap}${useCaseCap}) {}
 
-      // add manually the route to the controller and the request 
-      async handle(): Promise<void> {
-        try {
-          const result = await this.${useCaseLow}.execute(new Request${agregateCap}${useCaseCap}());
-          
-        } catch (error) {
-          res.status(500).json({ message: error.message });
-        }
-      }
-    }`;
+  // add manually the route to the controller and the request 
+  async handle(): Promise<void> {
+    try {
+      const result = await this.${useCaseLow}.execute(new Request${agregateCap}${useCaseCap}());
+      
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+}`;
 };
 
 export const createEventHandler = (
@@ -97,52 +90,45 @@ export const createEventHandler = (
   const agregateLow = agregateName.toLowerCase();
   const useCaseLow = nounForm.toLowerCase();
 
-  return `
-    import { ${agregateCap}${nounCap} } from '../../app/use-cases/${verbBase}/${agregateLow}-${nounForm}.use-case';
-    import { Request${agregateCap}${nounCap} } from '../../app/use-cases/${verbBase}/dto/request-${agregateLow}-${nounForm}.dto';
+  return `import { ${agregateCap}${nounCap} } from '../../app/use-cases/${verbBase}/${agregateLow}-${nounForm}.use-case';
+import { Request${agregateCap}${nounCap} } from '../../app/use-cases/${verbBase}/dto/request-${agregateLow}-${nounForm}.dto';
 
-    export class ${handlerCap} implements Handler {
-      constructor(private readonly ${useCaseLow}: ${agregateCap}${nounCap}) {}
+export class ${handlerCap} implements Handler {
+  constructor(private readonly ${useCaseLow}: ${agregateCap}${nounCap}) {}
 
-      async handle(): Promise<void> {
-        throw new Error('Method not implemented.');
-    }
-  `;
+  async handle(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+}`;
 };
 
 export const createValueObject = (agregateName: string, valueObjectName: string): string => {
   const agregateCap = capitalize(agregateName);
   const valueObjectCap = capitalize(valueObjectName);
 
-  return `
-    import { ValueObject } from '@shared/domain/value-objects/value-object';
-    // add shared value object type to extends 
-    export class ${agregateCap}${valueObjectCap} extends > { //example StringValueObject
-      constructor(private readonly value: type) {
-        super(value);
-        this.validate(value);
-      }
-      
-      private ensureIs${valueObjectCap}(value: type): void {
-        // Add validation logic here
-      }
-      
-    }
-  `;
+  return `// add shared value object type to extends 
+export class ${agregateCap}${valueObjectCap} extends { //example StringValueObject
+  constructor(private readonly value: type) {
+    super(value);
+    this.validate(value);
+  }
+  
+  private ensureIs${valueObjectCap}(value: type): void {
+    // Add validation logic here
+  }
+}`;
 };
 
 export const createRepository = (agregateName: string): string => {
   const agregateCap = capitalize(agregateName);
 
-  return `
-    export interface ${agregateCap}Repository {
-      // Define repository methods here
-      // Example:
-      // findById(id: string): Promise<${agregateCap} | null>;
-      // save(${agregateName.toLowerCase()}: ${agregateCap}): Promise<void>;
-      // delete(id: string): Promise<void>;
-    }
-  `;
+  return `export interface ${agregateCap}Repository {
+  // Define repository methods here
+  // Example:
+  // findById(id: string): Promise<${agregateCap} | null>;
+  // save(${agregateName.toLowerCase()}: ${agregateCap}): Promise<void>;
+  // delete(id: string): Promise<void>;
+}`;
 };
 
 export const createAggregate = (agregateName: string, valueObjects?: string[]): string => {
@@ -159,14 +145,11 @@ export const createAggregate = (agregateName: string, valueObjects?: string[]): 
     });
   }
 
-  return `
-    import { Aggregate } from '@shared/domain/aggregate';
-    ${imports}
-    
-    export class ${agregateCap} extends Aggregate {
-      constructor(${properties}) {
-        super();
-      }
-    }
-  `;
+  return `import { Aggregate } from '@shared/domain/aggregate';
+${imports}
+export class ${agregateCap} extends Aggregate {
+  constructor(${properties}) {
+    super();
+  }
+}`;
 };
