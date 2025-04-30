@@ -141,7 +141,7 @@ export const createAggregate = (agregateName: string, valueObjects?: string[]): 
     valueObjects.forEach((vo) => {
       const voCap = capitalize(vo);
       imports += `import { ${agregateCap}${voCap} } from './value-objects/${agregateName.toLowerCase()}-${vo.toLowerCase()}.value-object';\n`;
-      properties += `  private readonly _${vo.toLowerCase()}: ${agregateCap}${voCap};\n`;
+      properties += `  private readonly _${vo.toLowerCase()}: ${agregateCap}${voCap},\n`;
     });
   }
 
