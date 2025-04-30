@@ -146,7 +146,7 @@ export async function createDirectoryStructure(boundedContext: BoundedContext) {
         fs.writeFileSync(
           path.join(
             controllerPath,
-            `${moduleConfig.agregateName.toLowerCase()}-${nounForm}.controller.ts`
+            `${verbBase}-${moduleConfig.agregateName.toLowerCase()}-${useCase.httpMethod!.toLowerCase()}.controller.ts`
           ),
           controllerContent
         );

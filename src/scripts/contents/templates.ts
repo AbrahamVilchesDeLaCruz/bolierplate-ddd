@@ -62,7 +62,7 @@ export const createController = (
   return `import { ${agregateCap}${useCaseCap} } from '../../app/use-cases/${verbBase}/${agregateLow}-${useCase}.use-case';
 import { Request${agregateCap}${useCaseCap} } from '../../app/use-cases/${verbBase}/dto/request-${agregateLow}-${useCase}.dto';
 
-export class ${agregateCap}${useCaseCap}${capitalize(httpMethod)}Controller {
+export class ${useCaseCap}${agregateCap}${capitalize(httpMethod.toLowerCase())}Controller {
   constructor(private readonly ${useCaseLow}: ${agregateCap}${useCaseCap}) {}
 
   // add manually the route to the controller and the request 
