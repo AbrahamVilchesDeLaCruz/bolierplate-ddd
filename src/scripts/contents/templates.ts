@@ -109,3 +109,64 @@ export const createEventHandler = (
     }
   `;
 };
+
+export const createValueObject = (agregateName: string, valueObjectName: string): string => {
+  const agregateCap = capitalize(agregateName);
+  const valueObjectCap = capitalize(valueObjectName);
+
+  return `
+    import { ValueObject } from '@shared/domain/value-objects/value-object';
+    // add shared value object type to extends 
+    export class ${agregateCap}${valueObjectCap} extends > { //example StringValueObject
+      constructor(private readonly value: type) {
+        super(value);
+        this.validate(value);
+      }
+      
+      private ensureIs${valueObjectCap}(value: type): void {
+        // Add validation logic here
+      }
+      
+    }
+  `;
+};
+
+export const createRepository = (agregateName: string): string => {
+  const agregateCap = capitalize(agregateName);
+
+  return `
+    export interface ${agregateCap}Repository {
+      // Define repository methods here
+      // Example:
+      // findById(id: string): Promise<${agregateCap} | null>;
+      // save(${agregateName.toLowerCase()}: ${agregateCap}): Promise<void>;
+      // delete(id: string): Promise<void>;
+    }
+  `;
+};
+
+export const createAggregate = (agregateName: string, valueObjects?: string[]): string => {
+  const agregateCap = capitalize(agregateName);
+
+  let imports = "";
+  let properties = "";
+
+  if (valueObjects && valueObjects.length > 0) {
+    valueObjects.forEach((vo) => {
+      const voCap = capitalize(vo);
+      imports += `import { ${agregateCap}${voCap} } from './value-objects/${agregateName.toLowerCase()}-${vo.toLowerCase()}.value-object';\n`;
+      properties += `  private readonly _${vo.toLowerCase()}: ${agregateCap}${voCap};\n`;
+    });
+  }
+
+  return `
+    import { Aggregate } from '@shared/domain/aggregate';
+    ${imports}
+    
+    export class ${agregateCap} extends Aggregate {
+      constructor(${properties}) {
+        super();
+      }
+    }
+  `;
+};

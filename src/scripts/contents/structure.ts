@@ -9,6 +9,9 @@ import {
   createUseCase,
   createController,
   createEventHandler,
+  createValueObject,
+  createRepository,
+  createAggregate,
 } from "./templates";
 
 export async function createDirectoryStructure(boundedContext: BoundedContext) {
@@ -40,6 +43,44 @@ export async function createDirectoryStructure(boundedContext: BoundedContext) {
         }
       });
     }
+
+    // Create value objects if specified
+    if (moduleConfig.valueObjects && moduleConfig.valueObjects.length > 0) {
+      const valueObjectsPath = path.join(moduleBase, "domain", "value-objects");
+
+      moduleConfig.valueObjects.forEach((valueObject) => {
+        const valueObjectContent = createValueObject(moduleConfig.agregateName, valueObject);
+        const fileName = `${moduleConfig.agregateName.toLowerCase()}-${valueObject.toLowerCase()}.value-object.ts`;
+        const filePath = path.join(valueObjectsPath, fileName);
+
+        fs.writeFileSync(filePath, valueObjectContent);
+        console.log(
+          chalk.green(
+            `✨ Created value object: ${moduleConfig.agregateName}${capitalize(valueObject)}`
+          )
+        );
+      });
+    }
+
+    // Create repository if specified
+    if (moduleConfig.createRepository) {
+      const repositoryPath = path.join(moduleBase, "domain", "repository");
+      const repositoryContent = createRepository(moduleConfig.agregateName);
+      const fileName = `${moduleConfig.agregateName.toLowerCase()}.repository.ts`;
+      const filePath = path.join(repositoryPath, fileName);
+
+      fs.writeFileSync(filePath, repositoryContent);
+      console.log(chalk.green(`✨ Created repository: ${moduleConfig.agregateName}Repository`));
+    }
+
+    // Create aggregate
+    const domainPath = path.join(moduleBase, "domain");
+    const aggregateContent = createAggregate(moduleConfig.agregateName, moduleConfig.valueObjects);
+    const aggregateFileName = `${moduleConfig.agregateName.toLowerCase()}.ts`;
+    const aggregateFilePath = path.join(domainPath, aggregateFileName);
+
+    fs.writeFileSync(aggregateFilePath, aggregateContent);
+    console.log(chalk.green(`✨ Created aggregate: ${moduleConfig.agregateName}`));
 
     // Crear casos de uso
     moduleConfig.useCases.forEach((useCase) => {
@@ -99,7 +140,7 @@ export async function createDirectoryStructure(boundedContext: BoundedContext) {
           moduleConfig.agregateName,
           nounForm,
           verbBase,
-          useCase.httpMethod!,
+          useCase.httpMethod!
         );
 
         fs.writeFileSync(

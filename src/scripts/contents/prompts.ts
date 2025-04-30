@@ -65,24 +65,8 @@ export const promptBoundedContext = async (): Promise<BoundedContext> => {
 
   if (!rawModules.trim()) {
     // Un solo módulo por defecto
-    const { agregateName, useCasesRaw } = await agregateNameAndUseCases("default");
-
-    const useCaseNames = useCasesRaw
-      .split(";")
-      .map((uc: string) => uc.trim())
-      .filter(Boolean);
-
-    const useCases: UseCaseConfig[] = [];
-    for (const useCaseName of useCaseNames) {
-      const useCaseDetails = await promptUseCaseDetails(useCaseName);
-      useCases.push(useCaseDetails);
-    }
-
-    modules.push({
-      name: "default",
-      agregateName,
-      useCases,
-    });
+    const moduleConfig = await getModuleConfig("default");
+    modules.push(moduleConfig);
   } else {
     const moduleNames = rawModules
       .split(/[,-]/) // Split by both comma and hyphen
@@ -90,24 +74,8 @@ export const promptBoundedContext = async (): Promise<BoundedContext> => {
       .filter(Boolean);
 
     for (const mod of moduleNames) {
-      const { agregateName, useCasesRaw } = await agregateNameAndUseCases(mod);
-
-      const useCaseNames = useCasesRaw
-        .split(";")
-        .map((uc: string) => uc.trim())
-        .filter(Boolean);
-
-      const useCases: UseCaseConfig[] = [];
-      for (const useCaseName of useCaseNames) {
-        const useCaseDetails = await promptUseCaseDetails(useCaseName);
-        useCases.push(useCaseDetails);
-      }
-
-      modules.push({
-        name: mod,
-        agregateName,
-        useCases,
-      });
+      const moduleConfig = await getModuleConfig(mod);
+      modules.push(moduleConfig);
     }
   }
 
@@ -115,6 +83,63 @@ export const promptBoundedContext = async (): Promise<BoundedContext> => {
     name: boundedContextName,
     path: boundedContextPath,
     modules,
+  };
+};
+
+const getModuleConfig = async (moduleName: string): Promise<ModuleConfig> => {
+  const { agregateName, useCasesRaw } = await agregateNameAndUseCases(moduleName);
+
+  const { createValueObjects } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "createValueObjects",
+      message: `Do you want to create value objects for "${agregateName}" aggregate?`,
+      default: true,
+    },
+  ]);
+
+  let valueObjects: string[] = [];
+  if (createValueObjects) {
+    const { valueObjectsRaw } = await inquirer.prompt([
+      {
+        type: "input",
+        name: "valueObjectsRaw",
+        message: `Enter value objects for "${agregateName}" (semicolon-separated, e.g. name;description;email):`,
+      },
+    ]);
+
+    valueObjects = valueObjectsRaw
+      .split(";")
+      .map((vo: string) => vo.trim())
+      .filter(Boolean);
+  }
+
+  const { createRepository } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "createRepository",
+      message: `Do you want to create a repository for "${agregateName}" aggregate?`,
+      default: true,
+    },
+  ]);
+
+  const useCaseNames = useCasesRaw
+    .split(";")
+    .map((uc: string) => uc.trim())
+    .filter(Boolean);
+
+  const useCases: UseCaseConfig[] = [];
+  for (const useCaseName of useCaseNames) {
+    const useCaseDetails = await promptUseCaseDetails(useCaseName);
+    useCases.push(useCaseDetails);
+  }
+
+  return {
+    name: moduleName,
+    agregateName,
+    useCases,
+    valueObjects,
+    createRepository,
   };
 };
 

@@ -10,6 +10,8 @@ export interface ModuleConfig {
   name: string;
   agregateName: string;
   useCases: UseCaseConfig[];
+  valueObjects?: string[];
+  createRepository?: boolean;
 }
 
 export interface BoundedContext {
