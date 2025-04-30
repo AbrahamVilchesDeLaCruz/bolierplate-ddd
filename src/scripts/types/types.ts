@@ -8,6 +8,7 @@ export interface UseCaseConfig {
 
 export interface ModuleConfig {
   name: string;
+  agregateName: string;
   useCases: UseCaseConfig[];
 }
 

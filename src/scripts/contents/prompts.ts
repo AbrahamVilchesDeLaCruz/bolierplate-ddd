@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import { BoundedContext, ModuleConfig, UseCaseConfig } from "../types/types";
 
-export async function promptUseCaseDetails(useCaseName: string): Promise<UseCaseConfig> {
+export const promptUseCaseDetails = async (useCaseName: string): Promise<UseCaseConfig> => {
   const { implementationType } = await inquirer.prompt([
     {
       type: "list",
@@ -38,9 +38,9 @@ export async function promptUseCaseDetails(useCaseName: string): Promise<UseCase
     ]);
     return { name: useCaseName, implementationType, eventName, handlerName };
   }
-}
+};
 
-export async function promptBoundedContext(): Promise<BoundedContext> {
+export const promptBoundedContext = async (): Promise<BoundedContext> => {
   const { boundedContextName, boundedContextPath, rawModules } = await inquirer.prompt([
     {
       type: "input",
@@ -65,13 +65,7 @@ export async function promptBoundedContext(): Promise<BoundedContext> {
 
   if (!rawModules.trim()) {
     // Un solo módulo por defecto
-    const { useCasesRaw } = await inquirer.prompt([
-      {
-        type: "input",
-        name: "useCasesRaw",
-        message: `Enter use cases for the default module (semicolon-separated):`,
-      },
-    ]);
+    const { agregateName, useCasesRaw } = await agregateNameAndUseCases("default");
 
     const useCaseNames = useCasesRaw
       .split(";")
@@ -86,6 +80,7 @@ export async function promptBoundedContext(): Promise<BoundedContext> {
 
     modules.push({
       name: "default",
+      agregateName,
       useCases,
     });
   } else {
@@ -95,13 +90,7 @@ export async function promptBoundedContext(): Promise<BoundedContext> {
       .filter(Boolean);
 
     for (const mod of moduleNames) {
-      const { useCasesRaw } = await inquirer.prompt([
-        {
-          type: "input",
-          name: "useCasesRaw",
-          message: `Enter use cases for module "${mod}" (semicolon-separated):`,
-        },
-      ]);
+      const { agregateName, useCasesRaw } = await agregateNameAndUseCases(mod);
 
       const useCaseNames = useCasesRaw
         .split(";")
@@ -116,6 +105,7 @@ export async function promptBoundedContext(): Promise<BoundedContext> {
 
       modules.push({
         name: mod,
+        agregateName,
         useCases,
       });
     }
@@ -126,4 +116,22 @@ export async function promptBoundedContext(): Promise<BoundedContext> {
     path: boundedContextPath,
     modules,
   };
-}
+};
+
+const agregateNameAndUseCases = async (moduleName: string) => {
+  const { agregateName, useCasesRaw } = await inquirer.prompt([
+    {
+      type: "input",
+      name: "agregateName",
+      message: `What is the aggregate name for module "${moduleName}"?`,
+      validate: (input: string) => (input.length > 0 ? true : "Aggregate name is required"),
+    },
+    {
+      type: "input",
+      name: "useCasesRaw",
+      message: `Enter use cases for module "${moduleName}" (semicolon-separated):`,
+    },
+  ]);
+
+  return { agregateName, useCasesRaw };
+};

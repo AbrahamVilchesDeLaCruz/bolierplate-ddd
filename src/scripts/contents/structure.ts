@@ -54,39 +54,64 @@ export async function createDirectoryStructure(boundedContext: BoundedContext) {
       fs.mkdirSync(dtoPath, { recursive: true });
 
       // Crear archivos DTO
-      const requestDtoContent = createRequestDto(moduleConfig.name, nounForm);
-      const responseDtoContent = createResponseDto(moduleConfig.name, nounForm);
-      const useCaseContent = createUseCase(moduleConfig.name, nounForm);
+      const requestDtoContent = createRequestDto(
+        moduleConfig.name,
+        moduleConfig.agregateName,
+        nounForm
+      );
+      const responseDtoContent = createResponseDto(
+        moduleConfig.name,
+        moduleConfig.agregateName,
+        nounForm
+      );
+      const useCaseContent = createUseCase(moduleConfig.name, moduleConfig.agregateName, nounForm);
 
       // Escribir archivos
       fs.writeFileSync(
-        path.join(dtoPath, `request-${moduleConfig.name.toLowerCase()}-${nounForm}.dto.ts`),
+        path.join(dtoPath, `request-${moduleConfig.agregateName.toLowerCase()}-${nounForm}.dto.ts`),
         requestDtoContent
       );
       fs.writeFileSync(
-        path.join(dtoPath, `response-${moduleConfig.name.toLowerCase()}-${nounForm}.dto.ts`),
+        path.join(
+          dtoPath,
+          `response-${moduleConfig.agregateName.toLowerCase()}-${nounForm}.dto.ts`
+        ),
         responseDtoContent
       );
       fs.writeFileSync(
-        path.join(useCasePath, `${moduleConfig.name.toLowerCase()}-${nounForm}.use-case.ts`),
+        path.join(
+          useCasePath,
+          `${moduleConfig.agregateName.toLowerCase()}-${nounForm}.use-case.ts`
+        ),
         useCaseContent
       );
 
-      console.log(chalk.green(`✨ Created use case: ${moduleConfig.name}${capitalize(nounForm)}`));
+      console.log(
+        chalk.green(`✨ Created use case: ${moduleConfig.agregateName}${capitalize(nounForm)}`)
+      );
 
       // Crear implementación según el tipo
       if (useCase.implementationType === "endpoint") {
         // Crear controller
         const controllerPath = path.join(moduleBase, "infra", "controllers");
-        const controllerContent = createController(moduleConfig.name, nounForm, verbBase);
+        const controllerContent = createController(
+          moduleConfig.name,
+          moduleConfig.agregateName,
+          nounForm,
+          verbBase,
+          useCase.httpMethod!,
+        );
 
         fs.writeFileSync(
-          path.join(controllerPath, `${moduleConfig.name.toLowerCase()}-${nounForm}.controller.ts`),
+          path.join(
+            controllerPath,
+            `${moduleConfig.agregateName.toLowerCase()}-${nounForm}.controller.ts`
+          ),
           controllerContent
         );
         console.log(
           chalk.green(
-            `✨ Created controller: ${moduleConfig.name}${capitalize(nounForm)}Controller`
+            `✨ Created controller: ${moduleConfig.agregateName}${capitalize(nounForm)}Controller`
           )
         );
       } else if (useCase.implementationType === "event-handler") {
@@ -94,6 +119,7 @@ export async function createDirectoryStructure(boundedContext: BoundedContext) {
         const handlerPath = path.join(moduleBase, "infra", "event-handlers");
         const handlerContent = createEventHandler(
           moduleConfig.name,
+          moduleConfig.agregateName,
           nounForm,
           verbBase,
           useCase.handlerName
@@ -103,7 +129,8 @@ export async function createDirectoryStructure(boundedContext: BoundedContext) {
           path.join(
             handlerPath,
             `${
-              useCase.handlerName?.toLowerCase() || `${moduleConfig.name.toLowerCase()}-${nounForm}`
+              useCase.handlerName?.toLowerCase() ||
+              `${moduleConfig.agregateName.toLowerCase()}-${nounForm}`
             }.handler.ts`
           ),
           handlerContent
@@ -111,7 +138,7 @@ export async function createDirectoryStructure(boundedContext: BoundedContext) {
         console.log(
           chalk.green(
             `✨ Created event handler: ${capitalize(
-              useCase.handlerName || `${moduleConfig.name}${capitalize(nounForm)}Handler`
+              useCase.handlerName || `${moduleConfig.agregateName}${capitalize(nounForm)}Handler`
             )}`
           )
         );
