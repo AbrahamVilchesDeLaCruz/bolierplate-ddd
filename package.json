@@ -1,6 +1,6 @@
 {
   "name": "ddd-code-generator",
-  "version": "1.0.1.1",
+  "version": "1.0.2",
   "description": "A CLI tool to generate Domain-Driven Design structure for bounded contexts",
   "main": "dist/index.js",
   "bin": {
