@@ -1,11 +1,13 @@
+#!/usr/bin/env node
+
 import { Command } from "commander";
 import chalk from "chalk";
-import { promptBoundedContext, createDirectoryStructure } from "./contents";
+import { promptBoundedContext, createDirectoryStructure } from "./scripts/contents";
 
 const program = new Command();
 
 program
-  .name("ddd-generator")
+  .name("ddd-gen")
   .description("Generate DDD structure for a bounded context")
   .version("1.0.0");
 

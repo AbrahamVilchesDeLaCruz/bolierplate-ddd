@@ -1,68 +1,83 @@
-# DDD Boilerplate Generator
+# DDD Code Generator
 
-This is a TypeScript boilerplate generator for creating Domain-Driven Design (DDD) structures. It helps you set up a new bounded context with all the necessary folders and files following DDD principles.
+A CLI tool to generate Domain-Driven Design structure for bounded contexts.
 
 ## Installation
 
 ```bash
-npm install
+# Install globally
+npm install -g ddd-code-generator
+
+# Or use with npx
+npx ddd-code-generator
 ```
 
 ## Usage
 
-To generate a new DDD structure, run:
+### CLI
 
 ```bash
-npm run generate
+# Generate DDD structure using interactive prompts
+ddd-gen
 ```
 
-The generator will ask you for:
+### Programmatic usage
 
-1. The name of your bounded context
-2. The path where you want to place it (relative to src/)
-3. The modules you want to create (comma-separated)
-4. The use cases you want to create (comma-separated)
+```typescript
+import { promptBoundedContext, createDirectoryStructure } from "ddd-code-generator";
 
-## Generated Structure
+async function generateDDD() {
+  const boundedContext = await promptBoundedContext();
+  await createDirectoryStructure(boundedContext);
+}
 
-The generator will create the following structure:
-
-```
-your-bounded-context/
-├── app/
-│   └── use-cases/
-│       └── your-module/
-│           ├── dto/
-│           │   ├── request-your-module.dto.ts
-│           │   └── response-your-module.dto.ts
-│           └── your-module.use-case.ts
-├── domain/
-│   ├── event/
-│   ├── exceptions/
-│   ├── repository/
-│   ├── value-object/
-│   └── user.ts
-└── infra/
-    ├── controllers/
-    │   └── payloads/
-    ├── exceptions/
-    ├── framework/
-    └── typeorm/
-        ├── entity/
-        ├── mapper/
-        └── repository/
+generateDDD();
 ```
 
-## Development
+## Features
 
-To build the project:
+- Interactive CLI prompts for creating DDD structures
+- Generates bounded contexts with aggregates
+- Creates proper folder structure following DDD principles
+- Generates boilerplate code for:
+  - Aggregates
+  - Value Objects
+  - Repositories
+  - Use Cases
+  - DTOs
+  - Controllers
+  - Event Handlers
 
-```bash
-npm run build
+## Structure Generated
+
+The generator creates a standard DDD folder structure:
+
+```
+src/[bounded-context]/
+├── [aggregate]/
+│   ├── app/
+│   │   └── use-cases/
+│   │       ├── [verb]/
+│   │       │   ├── dto/
+│   │       │   │   ├── request-[aggregate]-[verb].dto.ts
+│   │       │   │   └── response-[aggregate]-[verb].dto.ts
+│   │       │   └── [aggregate]-[verb].use-case.ts
+│   │       ├── domain/
+│   │       │   ├── event/
+│   │       │   ├── exceptions/
+│   │       │   ├── repository/
+│   │       │   │   └── [aggregate].repository.ts
+│   │       │   ├── value-objects/
+│   │       │   │   └── [aggregate]-[property].value-object.ts
+│   │       │   └── [aggregate].ts
+│   │       └── infra/
+│   │           ├── controllers/
+│   │           │   └── [verb]-[aggregate]-[http-method].controller.ts
+│   │           ├── event-handlers/
+│   │           ├── exceptions/
+│   │           └── typeorm/
 ```
 
-To run the project:
+## License
 
-```bash
-npm start
-```
+MIT
