@@ -1,6 +1,6 @@
 {
   "name": "ddd-code-generator",
-  "version": "1.0.1",
+  "version": "1.0.1.1",
   "description": "A CLI tool to generate Domain-Driven Design structure for bounded contexts",
   "main": "dist/index.js",
   "bin": {
@@ -23,8 +23,16 @@
     "generator",
     "cli"
   ],
-  "author": "Your Name",
+  "author": "Abraham Vilches de la Cruz",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AbrahamVilchesDeLaCruz/bolierplate-ddd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AbrahamVilchesDeLaCruz/bolierplate-ddd/issues"
+  },
+  "homepage": "https://github.com/AbrahamVilchesDeLaCruz/bolierplate-ddd#readme",
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^9.4.0",

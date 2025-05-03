@@ -2,6 +2,8 @@
 
 A CLI tool to generate Domain-Driven Design structure for bounded contexts.
 
+GitHub: [https://github.com/AbrahamVilchesDeLaCruz/bolierplate-ddd](https://github.com/AbrahamVilchesDeLaCruz/bolierplate-ddd)
+
 ## Installation
 
 ```bash
@@ -75,22 +77,34 @@ src/[bounded-context]/
 │   │       │   │   ├── request-[aggregate]-[verb].dto.ts
 │   │       │   │   └── response-[aggregate]-[verb].dto.ts
 │   │       │   └── [aggregate]-[verb].use-case.ts
-│   │       ├── domain/
-│   │       │   ├── event/
-│   │       │   ├── exceptions/
-│   │       │   ├── repository/
-│   │       │   │   └── [aggregate].repository.ts
-│   │       │   ├── value-objects/
-│   │       │   │   └── [aggregate]-[property].value-object.ts
-│   │       │   └── [aggregate].ts
-│   │       └── infra/
-│   │           ├── controllers/
-│   │           │   └── [verb]-[aggregate]-[http-method].controller.ts
-│   │           ├── event-handlers/
-│   │           ├── exceptions/
-│   │           └── typeorm/
+│   ├── domain/
+│   │   ├── event/
+│   │   ├── exceptions/
+│   │   ├── repository/
+│   │       └── [aggregate].repository.ts
+│   │   ├── value-objects/
+│   │       └── [aggregate]-[property].value-object.ts
+│   │   └── [aggregate].ts
+│   ├── infra/
+│   │   ├── controllers/
+│   │       └── [verb]-[aggregate]-[http-method].controller.ts
+│   │   ├── event-handlers/
+│   │   ├── exceptions/
+│   │   └── typeorm/
 ```
 
 ## License
 
 MIT
+
+## Contributing
+
+We welcome contributions!
+Since this is a public repository, feel free to:
+
+- Open issues to report bugs or suggest features.
+- Fork the project and submit a Pull Request (PR) with your improvements.
+
+Note: All changes must go through a pull request. Direct edits to the main branch are restricted.
+
+Please follow standard GitHub flow: fork → commit → PR → review → merge.
