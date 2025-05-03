@@ -5,11 +5,8 @@ A CLI tool to generate Domain-Driven Design structure for bounded contexts.
 ## Installation
 
 ```bash
-# Install globally
-npm install -g ddd-code-generator
-
-# Or use with npx
-npx ddd-code-generator
+# Install as a dev dependency in your project
+npm install --save-dev ddd-code-generator
 ```
 
 ## Usage
@@ -19,6 +16,22 @@ npx ddd-code-generator
 ```bash
 # Generate DDD structure using interactive prompts
 ddd-gen
+```
+
+### Add to npm scripts
+
+Add the following to your package.json:
+
+```json
+"scripts": {
+  "generate:ddd": "ddd-gen",
+}
+```
+
+Then run commands with:
+
+```bash
+npm run generate:ddd
 ```
 
 ### Programmatic usage
