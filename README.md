@@ -12,6 +12,11 @@ npm install --save-dev ddd-code-generator
 ```
 
 ## Usage
+### Without Install
+```bash
+# You could also use directly without install
+npx ddd-code-generator
+```
 
 ### CLI
 
