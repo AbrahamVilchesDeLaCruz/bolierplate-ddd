@@ -5,7 +5,7 @@ export const createRequestDto = (
   agregateName: string,
   useCase: string
 ): string => {
-  return `import { Request } from '@shared/app/use-cases/request.ts'
+  return `import { Request } from '@shared/app/use-cases/request'
     
 export class Request${capitalize(agregateName)}${capitalize(useCase)} implements Request {
   // Add your request DTO properties here and implements Request shared interface
@@ -17,7 +17,7 @@ export const createResponseDto = (
   agregateName: string,
   useCase: string
 ): string => {
-  return `import { Response } from '@shared/app/use-cases/response.ts'
+  return `import { Response } from '@shared/app/use-cases/response'
     
 export class Response${capitalize(agregateName)}${capitalize(useCase)} implements Response {
   // Add your response DTO properties here and implements Response shared interface
@@ -35,7 +35,7 @@ export const createUseCase = (
 
   return `import { Request${agregateCap}${nounCap} } from './dto/request-${agregateLow}-${useCase}.dto';
 import { Response${agregateCap}${nounCap} } from './dto/response-${agregateLow}-${useCase}.dto';
-import { UseCase } from '@shared/app/use-cases/use-case.ts'
+import { UseCase } from '@shared/app/use-cases/use-case'
 
 export class ${agregateCap}${nounCap} implements UseCase {
   constructor() {}
